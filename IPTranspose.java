@@ -37,49 +37,39 @@ public class IPTranspose {
         FileInputStream inputStream2 = null;
         Scanner sc = null;
         Scanner sc2 = null;
-        /*BufferedWriter BWR2 = null;
-        FileWriter FWR2 = null;*/
         BufferedWriter BWR = null;
         FileWriter FWR = null;
         ArrayList<String> IPs = new ArrayList<>();
         ArrayList<String> Dates = new ArrayList<>();
-        
+        String filename = "SNDS3DeDuped";
         String[] IPString;
-        String[] dateString;
-        
-        String ReputationString = null;
-        String filePath = "/Users/keith.mcmanus/Downloads/GooglePostmasterDatafinal.csv";
-        String filePath2 = "/Users/keith.mcmanus/Downloads/GooglePostmasterDataFinal2.csv";
-        String filePath3 = "/Users/keith.mcmanus/Documents/FileReader/cleanIPs.txt";
-        int index;
+        String[] dateString;  
+        String filePath = ("/Users/keith.mcmanus/Documents/FileReader/"+filename+".csv");
         int count = 0;
         try{
-            inputStream = new FileInputStream(filePath3);
+            inputStream = new FileInputStream(filePath);
             sc = new Scanner(inputStream);
             
             while (sc.hasNextLine()){
                 String line = sc.nextLine();
-                IPs.add(line);
-                    //IPString = line.split(",");
-                    //IPs.add(IPString[0]);
+                    IPString = line.split(",");
+                    IPs.add(IPString[1]);
             }
-            sc.close();
+                    sc.close();
+                Set<String> cleanIPs = new LinkedHashSet<>(IPs);
+                IPs.clear();
+                IPs.addAll(cleanIPs);
+                System.out.println(IPs.size());
         }catch (Exception e) {}
-        Set<String> cleanIPs = new LinkedHashSet<String>(IPs);
-        IPs.clear();
-        IPs.addAll(cleanIPs);
-        System.out.println(IPs.size());
-        
+       
         try{
-            inputStream = new FileInputStream(filePath2);
+            inputStream = new FileInputStream(filePath);
             sc = new Scanner(inputStream);
-            
+
             while (sc.hasNextLine()){
                 String line = sc.nextLine();
                 dateString = line.split(",");
                 Dates.add(dateString[0]);
-                    //IPString = line.split(",");
-                    //IPs.add(IPString[0]);
             }
             sc.close();
         }catch (Exception e) {}
@@ -92,23 +82,24 @@ public class IPTranspose {
        
         
         try{
-            FWR = new FileWriter("/Users/keith.mcmanus/Documents/FileReader/c.txt");
+            FWR = new FileWriter("/Users/keith.mcmanus/Documents/FileReader/"+filename+"Formatted.csv");
             BWR = new BufferedWriter(FWR);
+            BWR.write(",");
+            BWR.flush();
+            for(int i = 0;i<Dates.size();i++){
+                BWR.write(Dates.get(i)+",");
+                BWR.flush();
+            }
             
             String line = null;
             String searchObj = null;
             String ipRep[] = null;
             String[] readLine = null;
-            String dateStart = "28-Mar-17";
             String rep = null;
             int repRecord = 0;
                 for(int i = 0; i<=IPs.size();i++)
                 {
-                    //inputStream2 = new FileInputStream(filePath2);
-                    //sc2 = new Scanner (inputStream2);
                     searchObj =  IPs.get(i);
-                    //repRecord = 0;
-                    //System.out.println(searchObj);
                     BWR.write("\n");
                     BWR.write(searchObj); 
                     count++;
@@ -117,9 +108,8 @@ public class IPTranspose {
                     for (int j = 0;j<Dates.size();j++){
                     //check line for date & IP, if has both record reputation.  if not at the end of the date for loop add a blank.
                         repRecord = 0; //set record for new date to not recorded
-                        inputStream2 = new FileInputStream(filePath2);
+                        inputStream2 = new FileInputStream(filePath);
                         sc2 = new Scanner (inputStream2);
-                        //System.out.println(Dates.get(j));
                         while(sc2.hasNextLine())
                         {
                         line = sc2.nextLine();
@@ -143,21 +133,3 @@ public class IPTranspose {
         }catch(Exception e){}
     }
 }
-
-
-/*if(repRecord == 0 && doesContain(realLine[1],searchObj)==false){
-                                BWR.write(",");
-                                BWR.flush();
-                                repRecord = 1;
-                            }*/
-                              /*if (doesContain(readLine[0],dateStart)==false){
-                                dateStart = readLine[0];
-                                if(repRecord == 0){
-                                    BWR.write(",");
-                                    BWR.flush();
-                                }
-                                else{
-                                repRecord = 0;
-                                System.out.println(dateStart+" "+repRecord);
-                                }
-                            }*/
